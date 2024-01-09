@@ -6,8 +6,9 @@
   <title>Pragnesh Prajapati Portfolio</title>
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-<!--   <link rel="stylesheet" href="styles.css"> -->
-  <!-- You can create a CSS file for your custom styles -->
+  <!-- <link rel="stylesheet" href="assets/css/styles.css">  -->
+  <style> /* Section styles */ #contact { background-color: #f0f0f0; padding: 60px 0; } /* Form styles */ #javascript_form { display: flex; flex-direction: column; width: 100%; max-width: 600px; margin: 40px auto; } #javascript_form input[type="text"], #javascript_form textarea { margin-bottom: 20px; padding: 12px 20px; border: 1px solid #ccc; border-radius: 4px; font-size: 16px; } #javascript_form textarea { resize: vertical; min-height: 150px; } #js_send { padding: 12px 20px; background-color: #212529; color: white; border: none; cursor: pointer; font-size: 16px; transition: background-color 0.3s; } #js_send:hover { background-color: #212529; } </style>
+
 </head>
 <body>
 
@@ -92,7 +93,7 @@
           </div>
         </div>
       </div>
-<!--       <div class="col-md-4">
+      <!-- <div class="col-md-4">
         <div class="card">
           <img src="assets/img/work-2.png" class="card-img-top" alt="Project 1">
           <div class="card-body">
@@ -117,9 +118,84 @@
    <div class="container">
      <h2>Contact Me</h2>
      <p>Feel free to get in touch!</p>
+     <form id="javascript_form">
+      <input type="text" name="subject" placeholder="Your Email" />
+      <!-- <input type="text" name="sentemail" placeholder="Email" /> -->
+      <textarea name="text" placeholder="Message"></textarea>
+      <input type="submit" id="js_send" value="Send" />
+    </form> 
      <!-- Add contact form or details -->
    </div>
  </section>
+
+ 
+
+<script>
+
+  //update this with your js_form selector
+  var form_id_js = "javascript_form";
+
+  var data_js = {
+      "access_token": "h5hwgdgps2ssp8orj48aaxm8" // sent after you sign up
+  };
+
+  function js_onSuccess() {
+      // remove this to avoid redirect
+      window.location = window.location.pathname + "?message=Email+Successfully+Sent%21&isError=0";
+  }
+
+  function js_onError(error) {
+      // remove this to avoid redirect
+      window.location = window.location.pathname + "?message=Email+could+not+be+sent.&isError=1";
+  }
+
+  var sendButton = document.getElementById("js_send");
+
+  function js_send() {
+      sendButton.value='Sending…';
+      sendButton.disabled=true;
+      var request = new XMLHttpRequest();
+      request.onreadystatechange = function() {
+          if (request.readyState == 4 && request.status == 200) {
+              js_onSuccess();
+          } else
+          if(request.readyState == 4) {
+              js_onError(request.response);
+          }
+      };
+
+      var subject = document.querySelector("#" + form_id_js + " [name='subject']").value;
+      var message = document.querySelector("#" + form_id_js + " [name='text']").value;
+      // var sentemail = document.querySelector('#' + form_id_js + "[name = 'sentemail']").value;
+      data_js['subject'] = subject;
+      data_js['text'] = message;
+      // data_js['sentemail'] = sentemail;
+      var params = toParams(data_js);
+
+      request.open("POST", "https://postmail.invotes.com/send", true);
+      request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+
+      request.send(params);
+
+      return false;
+  }
+
+  sendButton.onclick = js_send;
+
+  function toParams(data_js) {
+      var form_data = [];
+      for ( var key in data_js ) {
+          form_data.push(encodeURIComponent(key) + "=" + encodeURIComponent(data_js[key]));
+      }
+
+      return form_data.join("&");
+  }
+
+  var js_form = document.getElementById(form_id_js);
+  js_form.addEventListener("submit", function (e) {
+      e.preventDefault();
+  });
+</script>
 
  <footer class="footer bg-dark text-light">
    <div class="container">
